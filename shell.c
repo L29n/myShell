@@ -1,5 +1,5 @@
 #define _GNU_SOURCE
-#include <termios.h>
+// #include <termios.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <signal.h>
@@ -9,7 +9,7 @@
 #include <ctype.h>
 #include <errno.h>
 #include <sys/types.h>
-#include <sys/wait.h> 
+// #include <sys/wait.h>  
 
 
 typedef struct job //create nodes for linked list
@@ -26,6 +26,11 @@ job* head = NULL;
 job* last = NULL; //last node of the linked list for better insertion into linked list
 int numJobs = 0; //number of jobs in linked list, this is for the job_id
 pid_t currpid;
+
+
+
+
+
 
 int getNumFromStr(char** str){
     if(str[1][0] == '%'){
@@ -44,6 +49,9 @@ int getNumFromStr(char** str){
         return -1;
     }
 }
+
+
+
 
 
 char** stringTokenizer(char* input, int len, int* count){
@@ -75,15 +83,12 @@ char** stringTokenizer(char* input, int len, int* count){
 
     }
 
-    void initialize(){
-        
-    }
-
     //malloc for the formatted input
     char** formattedInput = (char**)malloc(sizeof(char*) * (wordCount + 1));
     for(int i = 0; i < wordCount; i++){
         formattedInput[i] = (char*)malloc(sizeof(char) * mallocSizes[i] + 1);
     }
+
 
     //populate formatted input
     int counter = 0;
@@ -107,6 +112,17 @@ char** stringTokenizer(char* input, int len, int* count){
     return formattedInput;
 
 }
+
+
+
+
+
+void initialize(){
+    
+}
+
+
+
 
 
 char* cd(char** formattedInput, int wordCount){
@@ -149,10 +165,6 @@ void handler(int signal)
     sigaddset(&sigmask, SIGTSTP);
     sigaddset(&sigmask, SIGCHLD);
     sigprocmask(SIG_BLOCK, &sigmask, NULL); //block signals so the signal handler does not get interrupted with other signals.
-    
-
-
-
     if(signal == SIGINT){
         job* pointer = head;
         while(pointer != NULL){
@@ -192,6 +204,14 @@ void handler(int signal)
 
     sigprocmask(SIG_UNBLOCK, &sigmask, NULL); //unblock with this
 }
+
+
+
+
+
+
+
+
 
 int main(int argc, char** argv){
     
@@ -428,3 +448,7 @@ int main(int argc, char** argv){
 
     return 0;
 }
+
+
+
+
