@@ -1,5 +1,9 @@
 #define _GNU_SOURCE
+<<<<<<< HEAD
 // #include <termios.h>
+=======
+#include <termios.h>z
+>>>>>>> 6b25c643bcd604fbae72a3d32abeba43ec2e4329
 #include <stdio.h>
 #include <stdlib.h>
 #include <signal.h>
@@ -9,7 +13,11 @@
 #include <ctype.h>
 #include <errno.h>
 #include <sys/types.h>
+<<<<<<< HEAD
 // #include <sys/wait.h>  
+=======
+#include <sys/wait.h>  
+>>>>>>> 6b25c643bcd604fbae72a3d32abeba43ec2e4329
 
 
 typedef struct job //create nodes for linked list
@@ -27,11 +35,14 @@ job* last = NULL; //last node of the linked list for better insertion into linke
 int numJobs = 0; //number of jobs in linked list, this is for the job_id
 pid_t currpid;
 
+<<<<<<< HEAD
 
 
 
 
 
+=======
+>>>>>>> 6b25c643bcd604fbae72a3d32abeba43ec2e4329
 int getNumFromStr(char** str){
     if(str[1][0] == '%'){
         int ans = 0;
@@ -51,9 +62,12 @@ int getNumFromStr(char** str){
 }
 
 
+<<<<<<< HEAD
 
 
 
+=======
+>>>>>>> 6b25c643bcd604fbae72a3d32abeba43ec2e4329
 char** stringTokenizer(char* input, int len, int* count){
     int mallocSizesBuffer = 10;
     int* mallocSizes = (int*)malloc(sizeof(int) * mallocSizesBuffer); //hold the sizes to malloc later
@@ -83,13 +97,23 @@ char** stringTokenizer(char* input, int len, int* count){
 
     }
 
+<<<<<<< HEAD
+=======
+    // void initialize(){
+        
+    // }
+
+>>>>>>> 6b25c643bcd604fbae72a3d32abeba43ec2e4329
     //malloc for the formatted input
     char** formattedInput = (char**)malloc(sizeof(char*) * (wordCount + 1));
     for(int i = 0; i < wordCount; i++){
         formattedInput[i] = (char*)malloc(sizeof(char) * mallocSizes[i] + 1);
     }
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 6b25c643bcd604fbae72a3d32abeba43ec2e4329
     //populate formatted input
     int counter = 0;
     int index = 0;
@@ -114,6 +138,7 @@ char** stringTokenizer(char* input, int len, int* count){
 }
 
 
+<<<<<<< HEAD
 
 
 
@@ -125,6 +150,8 @@ void initialize(){
 
 
 
+=======
+>>>>>>> 6b25c643bcd604fbae72a3d32abeba43ec2e4329
 char* cd(char** formattedInput, int wordCount){
     size_t size = 255;
     char* buf = (char*)malloc(sizeof(char) * size);
@@ -165,6 +192,13 @@ void handler(int signal)
     sigaddset(&sigmask, SIGTSTP);
     sigaddset(&sigmask, SIGCHLD);
     sigprocmask(SIG_BLOCK, &sigmask, NULL); //block signals so the signal handler does not get interrupted with other signals.
+<<<<<<< HEAD
+=======
+    
+
+
+
+>>>>>>> 6b25c643bcd604fbae72a3d32abeba43ec2e4329
     if(signal == SIGINT){
         job* pointer = head;
         while(pointer != NULL){
@@ -205,6 +239,7 @@ void handler(int signal)
     sigprocmask(SIG_UNBLOCK, &sigmask, NULL); //unblock with this
 }
 
+<<<<<<< HEAD
 
 
 
@@ -213,6 +248,8 @@ void handler(int signal)
 
 
 
+=======
+>>>>>>> 6b25c643bcd604fbae72a3d32abeba43ec2e4329
 int main(int argc, char** argv){
     
     
@@ -448,7 +485,10 @@ int main(int argc, char** argv){
 
     return 0;
 }
+<<<<<<< HEAD
 
 
 
 
+=======
+>>>>>>> 6b25c643bcd604fbae72a3d32abeba43ec2e4329
