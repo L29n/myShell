@@ -241,6 +241,17 @@ void shellKill(char** formattedInput, int wordCount){
 }
 
 
+void pwd(char** formattedInput, int wordCount){
+    if(wordCount > 1){
+        puts("pwd: too many arguments.");
+    }else{
+        printf("%s\n", getenv("PWD"));
+    }
+
+
+}
+
+
 
 
 void initialize(){
@@ -443,7 +454,11 @@ void initialize(){
             setenv("PWD", PWD, 1);
             printf("%s\n", PWD);
             free(PWD);
+        
 
+        }else if(strcmp(formattedInput[0], "pwd") == 0){
+
+            pwd(formattedInput, wordCount);
 
         }else if(strcmp(formattedInput[0], "exit") == 0){
 
