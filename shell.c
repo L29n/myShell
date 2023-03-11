@@ -1,5 +1,5 @@
 #define _GNU_SOURCE
-// #include <termios.h>
+#include <termios.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <signal.h>
@@ -9,7 +9,7 @@
 #include <ctype.h>
 #include <errno.h>
 #include <sys/types.h>
-// #include <sys/wait.h>  
+#include <sys/wait.h>  
 
 
 typedef struct job //create nodes for linked list
@@ -117,14 +117,6 @@ char** stringTokenizer(char* input, int len, int* count){
 
 
 
-void initialize(){
-    
-}
-
-
-
-
-
 char* cd(char** formattedInput, int wordCount){
     size_t size = 255;
     char* buf = (char*)malloc(sizeof(char) * size);
@@ -154,6 +146,7 @@ char* cd(char** formattedInput, int wordCount){
     }
     return PWD;
 }
+
 
 
 
@@ -205,17 +198,53 @@ void handler(int signal)
     sigprocmask(SIG_UNBLOCK, &sigmask, NULL); //unblock with this
 }
 
+void jobs(char** formattedInput, int wordCount){
+    job* ptr = head;
+    if(wordCount > 1){
+        puts("jobs: Too many arguments");
+    }
+    while(ptr != NULL){
+        if(ptr -> status == 1){ //paused
+            printf("[%d] %d Stopped %s\n", ptr -> job_id, ptr -> pid, ptr -> filename);
+        }else if(ptr -> status == 2){ //running
+            printf("[%d] %d Running %s\n", ptr -> job_id, ptr -> pid, ptr -> filename);
+        }
+        ptr = ptr -> next;
+    }
+}
 
 
-
-
-
-
-
-
-int main(int argc, char** argv){
+void shellKill(char** formattedInput, int wordCount){
+    if(wordCount < 2){
+        puts("kill: Not enough arguments");
     
-    
+    }else if(wordCount > 2){
+        puts("kill: Too many arguments");
+    }else{
+        job* ptr3 = head;
+        int a = getNumFromStr(formattedInput);
+        if(a > numJobs || a == -1){
+            puts("Not a valid job");
+        }else{
+            for(int i = 1; i < a; i++){
+                ptr3 = ptr3 -> next;
+            }
+            if(ptr3 -> status != 0){
+                ptr3 -> status = 0;
+                kill(ptr3 -> pid, SIGTERM);
+                printf("[%d] %d terminated by signal 15\n", ptr3 -> job_id, ptr3 -> pid);
+            }else{
+                puts("Not a valid job");
+            }
+        }
+    }
+}
+
+
+
+
+void initialize(){
+      
 
     
     while(1){
@@ -258,13 +287,20 @@ int main(int argc, char** argv){
         free(input);
         sigprocmask(SIG_UNBLOCK, &sigmask, NULL); //unblock
 
+
         if(wordCount == 0){
+
+
             for(int i = 0; i < wordCount; i++){
                 free(formattedInput[i]);
             }
             free(formattedInput);
             continue;  
+
+
         }else if(formattedInput[0][0] == '.' || formattedInput[0][0] == '/'){
+
+
             if(access(formattedInput[0], F_OK) == 0){
                 if(access(formattedInput[0], X_OK) == 0){
                     pid_t p1 = fork();
@@ -321,8 +357,11 @@ int main(int argc, char** argv){
             }else{
                 puts("No such file or directory");
             }
+
         
         }else if(strcmp(formattedInput[0], "bg") == 0){
+
+
             if(wordCount < 2){
                 puts("bg: Not enough arguments");
             
@@ -351,7 +390,11 @@ int main(int argc, char** argv){
                     }
                 }
             }
+
+
         }else if(strcmp(formattedInput[0], "fg") == 0){
+
+
             if(wordCount < 2){
                 puts("fg: Not enough arguments");
             
@@ -381,46 +424,30 @@ int main(int argc, char** argv){
                     }
                 }
             }
+
+
         }else if(strcmp(formattedInput[0], "jobs") == 0){
-            job* ptr = head;
-            while(ptr != NULL){
-                if(ptr -> status == 1){ //paused
-                    printf("[%d] %d Stopped %s\n", ptr -> job_id, ptr -> pid, ptr -> filename);
-                }else if(ptr -> status == 2){ //running
-                    printf("[%d] %d Running %s\n", ptr -> job_id, ptr -> pid, ptr -> filename);
-                }
-                ptr = ptr -> next;
-            }
+
+            jobs(formattedInput, wordCount);
+
         }else if(strcmp(formattedInput[0], "kill") == 0){
-            if(wordCount < 2){
-                puts("kill: Not enough arguments");
-            
-            }else if(wordCount > 2){
-                puts("kill: Too many arguments");
-            }else{
-                job* ptr3 = head;
-                int a = getNumFromStr(formattedInput);
-                if(a > numJobs || a == -1){
-                    puts("Not a valid job");
-                }else{
-                    for(int i = 1; i < a; i++){
-                        ptr3 = ptr3 -> next;
-                    }
-                    if(ptr3 -> status != 0){
-                        ptr3 -> status = 0;
-                        kill(ptr3 -> pid, SIGTERM);
-                        printf("[%d] %d terminated by signal 15\n", ptr3 -> job_id, ptr3 -> pid);
-                    }else{
-                        puts("Not a valid job");
-                    }
-                }
-            }
+
+
+            shellKill(formattedInput, wordCount);
+
+
         }else if(strcmp(formattedInput[0], "cd") == 0){
+
+
             char* PWD  = cd(formattedInput, wordCount);
             setenv("PWD", PWD, 1);
             printf("%s\n", PWD);
             free(PWD);
+
+
         }else if(strcmp(formattedInput[0], "exit") == 0){
+
+
             job* pointer = head;
             while(pointer != NULL){
                 free(pointer -> filename);
@@ -433,11 +460,13 @@ int main(int argc, char** argv){
             }
             free(formattedInput);
             exit(0);
+
+
         }else{
             printf("%s: command not found\n", formattedInput[0]);
         }
 
-        
+        //free our formattedInput array
         for(int i = 0; i < wordCount; i++){
             free(formattedInput[i]);
         }
@@ -445,6 +474,16 @@ int main(int argc, char** argv){
 
 
     }
+}
+
+
+
+
+
+
+int main(int argc, char** argv){
+    
+    initialize();
 
     return 0;
 }
